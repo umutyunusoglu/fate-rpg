@@ -6,8 +6,8 @@
   "description": "Manage Fate Core character sheets for the whole party, synced and persisted in the room.",
   "action": {
     "title": "Fate Sheets",
-    "icon": "icon.svg",
-    "popover": "index.html",
+    "icon": "/fate-rpg/icon.svg",
+    "popover": "/fate-rpg/index.html",
     "height": 500,
     "width": 350
   }

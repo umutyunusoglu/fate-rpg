@@ -42,7 +42,10 @@ npm install
 npm run dev
 ```
 
-This starts Vite's dev server, by default at `http://localhost:5173`.
+This starts Vite's dev server, by default at `http://localhost:5173`, but
+everything is actually served under **`/fate-rpg/`** (see the `base` note
+in `vite.config.ts` below), so the manifest is at
+`http://localhost:5173/fate-rpg/manifest.json`, not the bare root.
 
 ## Load the extension into an Owlbear Rodeo room (for testing)
 
@@ -51,7 +54,7 @@ server — no HTTPS or deployment needed for local testing:
 
 1. Run `npm run dev` and leave it running.
 2. In Owlbear Rodeo, open your profile menu and choose **Add Extension**.
-3. Enter your local manifest URL, e.g. `http://localhost:5173/manifest.json`.
+3. Enter your local manifest URL: `http://localhost:5173/fate-rpg/manifest.json`.
 4. Open (or create) a room, click the **...** menu at the bottom left,
    choose **Extensions**, and enable "Fate Core Sheets".
 5. The toolbar should now show the extension's action icon, opening the
@@ -89,17 +92,21 @@ Add the extension in Owlbear using that hosted manifest URL:
 https://umutyunusoglu.github.io/fate-rpg/manifest.json
 ```
 
-Because GitHub Pages project sites serve from a `/<repo-name>/` subpath
+Because GitHub Pages project sites serve from a `/fate-rpg/` subpath
 rather than domain root, `vite.config.ts` sets `base: "/fate-rpg/"` for
-production builds only (dev keeps `base: "/"` so the localhost workflow
-above is unaffected), and `manifest.json`'s `action.icon`/`action.popover`
-use filename-only paths (`icon.svg`, `index.html`) so they resolve
-correctly relative to wherever `manifest.json` itself is served from,
-under either base.
+**both** dev and build. This isn't just a build-output convenience:
+Owlbear resolves `manifest.json`'s `action.icon`/`action.popover` as
+`origin + path` (a plain string join against the bare domain, not a
+proper relative-URL resolution against the manifest's own location), so
+those paths must already be absolute *and* include `/fate-rpg` --
+`/fate-rpg/icon.svg`, `/fate-rpg/index.html` -- in every environment.
+Keeping dev and prod on the same base means there's one manifest.json
+instead of divergent dev/prod copies.
 
 To host elsewhere instead (Vercel, Netlify, Cloudflare Pages, ...), build
-with `npm run build`, adjust `base` in `vite.config.ts` to match your
-hosting path (`/` if served from domain root), and add the extension
+with `npm run build`, update `base` in `vite.config.ts` *and* the
+`/fate-rpg/...` paths in `public/manifest.json` to match your hosting
+path (both become `/` if served from domain root), and add the extension
 using that host's manifest URL instead.
 
 To list it in Owlbear's public extension directory, follow Owlbear's own

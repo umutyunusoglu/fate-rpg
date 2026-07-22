@@ -5,16 +5,17 @@ import react from "@vitejs/plugin-react";
 // Two HTML entry points: index.html is the action popover (roster),
 // modal.html is the larger sheet editor opened via OBR.modal.open().
 //
-// `base` is only set for production builds because the GitHub Pages
-// deployment serves this project from a subpath
-// (https://<user>.github.io/fate-rpg/) rather than domain root. Leaving
-// dev's base at "/" keeps the local `npm run dev` URL (and the README's
-// manifest-loading instructions) unchanged. manifest.json itself uses
-// filename-only (no leading slash) paths so it resolves correctly under
-// either base without needing its own copy of this logic.
-export default defineConfig(({ command }) => ({
+// `base` is "/fate-rpg/" in both dev and build (not just build) because
+// Owlbear resolves manifest.json's `action.icon`/`action.popover` as
+// origin + path (a literal string join against the bare domain, dropping
+// any path segments -- verified by testing: a path without a leading "/"
+// produced "https://<host>index.html" with no separator at all). That
+// means these paths must be absolute AND already include this project's
+// subdirectory, in every environment, so there is exactly one
+// manifest.json instead of dev/prod variants. See public/manifest.json.
+export default defineConfig({
   plugins: [react()],
-  base: command === "build" ? "/fate-rpg/" : "/",
+  base: "/fate-rpg/",
   build: {
     rollupOptions: {
       input: {
@@ -23,4 +24,4 @@ export default defineConfig(({ command }) => ({
       },
     },
   },
-}));
+});
