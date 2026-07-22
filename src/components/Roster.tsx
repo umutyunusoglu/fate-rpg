@@ -3,15 +3,16 @@ import { useMemo } from "react";
 import { useCharacters } from "../hooks/CharactersProvider";
 import type { PlayerInfo } from "../hooks/usePlayer";
 import { usePartyPlayers } from "../hooks/useParty";
-import { openImportModal, openSheetModal } from "../obr/modal";
 import { METADATA_WARNING_BYTES } from "../obr/metadata";
 import { CharacterCard } from "./CharacterCard";
 
 interface RosterProps {
   player: PlayerInfo;
+  onOpenCharacter: (id: string) => void;
+  onImport: () => void;
 }
 
-export function Roster({ player }: RosterProps) {
+export function Roster({ player, onOpenCharacter, onImport }: RosterProps) {
   const {
     characters,
     loading,
@@ -53,7 +54,7 @@ export function Roster({ player }: RosterProps) {
       <div className="roster-header">
         <h1>Fate Sheets</h1>
         <div className="roster-header-actions">
-          <button type="button" onClick={openImportModal}>
+          <button type="button" onClick={onImport}>
             Import
           </button>
           <button
@@ -61,7 +62,7 @@ export function Roster({ player }: RosterProps) {
             className="primary"
             onClick={() => {
               const created = createCharacter(player.id);
-              void openSheetModal(created.id);
+              onOpenCharacter(created.id);
             }}
           >
             New character
@@ -83,7 +84,7 @@ export function Roster({ player }: RosterProps) {
               role={player.role}
               playerId={player.id}
               players={allPlayers}
-              onOpen={() => openSheetModal(character.id)}
+              onOpen={() => onOpenCharacter(character.id)}
               onDuplicate={() => duplicateCharacter(character.id, player.id)}
               onDelete={() => deleteCharacter(character.id)}
               onAssign={(ownerId) => assignOwner(character.id, ownerId)}

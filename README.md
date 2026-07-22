@@ -8,23 +8,31 @@ tool's own JSON export.
 
 Fate Core only — no Fate Accelerated / approaches.
 
+The whole app (roster, sheet editor, import) lives inside the toolbar
+**action popover** as a set of views, not a separate `OBR.modal` — modals
+are a blocking overlay over the whole scene, which is wrong for a sheet
+you want open *while* playing. The popover resizes itself per view
+(`OBR.action.setWidth`/`setHeight` in `App.tsx`) and never blocks the
+board underneath it. The visual style is a fixed dark "grimdark"
+brass/gold-on-black theme (not following `OBR.theme`'s light/dark toggle
+— a deliberate branding choice for this extension).
+
 ## Project structure
 
 ```
 public/
   manifest.json        Extension manifest (action popover config)
   icon.svg              Toolbar icon
-index.html               Action popover entry (roster)
-modal.html                Sheet editor / import entry, opened via OBR.modal
+index.html               The only HTML entry point
 src/
+  App.tsx                  View-state router (roster / sheet / import) + popover resizing
   model/character.ts      Fate Core character types + factory helpers
   obr/
     metadata.ts            Room-metadata read/write/subscribe (persistence + sync)
     roles.ts                GM/player edit permission helpers (UI guard, not real access control)
-    modal.ts                Helpers to open the sheet-editor / import modal
   hooks/
     CharactersProvider.tsx  React context: debounced writes, live sync, dirty-id tracking
-    usePlayer.ts, useParty.ts, useTheme.ts   Thin wrappers around the OBR SDK
+    usePlayer.ts, useParty.ts   Thin wrappers around the OBR SDK
   import/
     json.ts                 This tool's own JSON schema, export, and migration-aware import
     pdf.ts                  Official Fate Core PDF field-mapping importer (pdf-lib)
@@ -32,7 +40,7 @@ src/
     Roster.tsx, CharacterCard.tsx, ConfirmDialog.tsx
     sheet/                   One component per sheet section (identity, aspects, skills, ...)
     import/ImportFlow.tsx    Import chooser + review-before-save screen
-  pages/SheetEditorApp.tsx  Modal root: routes between edit / import / not-found
+  pages/SheetRoute.tsx     Looks up a character by id, applies edit permission, renders SheetEditor
 ```
 
 ## Install & develop
@@ -70,9 +78,7 @@ account) to see live sync between two "players."
 npm run build
 ```
 
-Outputs a static site to `dist/` with two HTML entry points (`index.html`
-for the action popover, `modal.html` for the sheet editor / import flow).
-Preview it locally with `npm run preview`.
+Outputs a static site to `dist/`. Preview it locally with `npm run preview`.
 
 ## Publish
 

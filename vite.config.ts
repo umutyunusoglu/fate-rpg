@@ -1,9 +1,10 @@
-import { resolve } from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// Two HTML entry points: index.html is the action popover (roster),
-// modal.html is the larger sheet editor opened via OBR.modal.open().
+// A single entry point (index.html): the roster, sheet editor, and import
+// flow are all views within the one action popover, which OBR.action
+// resizes per view (see App.tsx) instead of opening a separate blocking
+// OBR.modal.
 //
 // `base` is "/fate-rpg/" in both dev and build (not just build) because
 // Owlbear resolves manifest.json's `action.icon`/`action.popover` as
@@ -16,12 +17,4 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "/fate-rpg/",
-  build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, "index.html"),
-        modal: resolve(__dirname, "modal.html"),
-      },
-    },
-  },
 });

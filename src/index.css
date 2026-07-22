@@ -1,32 +1,28 @@
+/*
+ * A single fixed "grimdark" theme (aged brass/gold on black, blood red for
+ * danger) rather than following OBR.theme's light/dark toggle -- this is a
+ * deliberate branding choice for this extension, not an oversight.
+ */
 :root {
-  --bg: #ffffff;
-  --bg-elevated: #f6f5f2;
-  --text: #1c1a22;
-  --text-secondary: #6b6375;
-  --border: #ddd9e0;
-  --accent: #7a3bff;
-  --accent-contrast: #ffffff;
-  --danger: #c4362b;
-  --danger-bg: rgba(196, 54, 43, 0.1);
-  --success: #2e8b57;
+  --bg: #0b0906;
+  --bg-elevated: #171209;
+  --bg-raised: #211a10;
+  --text: #e8dcbe;
+  --text-secondary: #a3937a;
+  --border: #4a3a1f;
+  --border-strong: #96742f;
+  --accent: #c69a3d;
+  --accent-strong: #e0b658;
+  --accent-contrast: #171209;
+  --danger: #b23a2e;
+  --danger-strong: #d9493a;
+  --danger-bg: rgba(178, 58, 46, 0.16);
+  --success: #7a8a4e;
 
-  color-scheme: light dark;
-  font: 14px/1.4 system-ui, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+  font: 14px/1.4 "Segoe UI", system-ui, Roboto, sans-serif;
   color: var(--text);
   background: var(--bg);
-}
-
-:root[data-theme="dark"] {
-  --bg: #1c1b22;
-  --bg-elevated: #26242e;
-  --text: #f1eef7;
-  --text-secondary: #a79fb3;
-  --border: #3a3745;
-  --accent: #b28bff;
-  --accent-contrast: #1c1b22;
-  --danger: #ff6b60;
-  --danger-bg: rgba(255, 107, 96, 0.15);
-  --success: #57c98a;
 }
 
 * {
@@ -35,12 +31,23 @@
 
 body {
   margin: 0;
-  background: var(--bg);
+  background:
+    radial-gradient(
+      ellipse at 50% -10%,
+      rgba(198, 154, 61, 0.08),
+      transparent 60%
+    ),
+    var(--bg);
   color: var(--text);
 }
 
 #root {
   min-height: 100vh;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-contrast);
 }
 
 button {
@@ -54,48 +61,79 @@ textarea,
 select {
   font: inherit;
   color: var(--text);
-  background: var(--bg-elevated);
+  background: var(--bg-raised);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 2px;
   padding: 4px 6px;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 1px solid var(--accent-strong);
+  outline-offset: 1px;
 }
 
 button:disabled,
 input:disabled,
 textarea:disabled,
 select:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 h1,
 h2,
 h3 {
-  font-weight: 600;
   margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-variant: small-caps;
+  letter-spacing: 0.05em;
+  color: var(--accent-strong);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
 }
 
 a {
-  color: var(--accent);
+  color: var(--accent-strong);
+}
+
+button {
+  background: linear-gradient(180deg, var(--bg-raised), var(--bg-elevated));
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  padding: 5px 10px;
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+button:not(:disabled):hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
 }
 
 button.primary {
-  background: var(--accent);
+  background: linear-gradient(180deg, var(--accent-strong), var(--accent));
   color: var(--accent-contrast);
-  border: 1px solid var(--accent);
+  border: 1px solid var(--accent-strong);
+  font-weight: 600;
+}
+
+button.primary:not(:disabled):hover {
+  color: var(--accent-contrast);
+  filter: brightness(1.08);
 }
 
 button.danger {
   background: var(--danger-bg);
-  color: var(--danger);
+  color: var(--danger-strong);
   border: 1px solid var(--danger);
 }
 
-button {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 5px 10px;
+button.danger:not(:disabled):hover {
+  border-color: var(--danger-strong);
+  color: var(--danger-strong);
 }
 
 .link {
@@ -103,8 +141,9 @@ button {
   border: none;
   padding: 0;
   text-align: left;
-  color: var(--accent);
+  color: var(--accent-strong);
   text-decoration: underline;
+  box-shadow: none;
 }
 
 /* --- Roster --- */
@@ -118,19 +157,30 @@ button {
 
 .roster-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 8px;
-  flex-wrap: wrap;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .roster-header h1 {
-  font-size: 16px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.roster-header h1::before,
+.roster-header h1::after {
+  content: "\2720";
+  color: var(--accent);
+  font-size: 0.7em;
+  margin: 0 8px;
+  vertical-align: middle;
 }
 
 .roster-header-actions {
   display: flex;
   gap: 6px;
+  justify-content: center;
 }
 
 .roster-empty {
@@ -147,9 +197,10 @@ button {
 
 .roster-warning {
   font-size: 12px;
-  color: var(--danger);
+  color: var(--danger-strong);
   background: var(--danger-bg);
-  border-radius: 4px;
+  border: 1px solid var(--danger);
+  border-radius: 2px;
   padding: 6px 8px;
 }
 
@@ -157,10 +208,11 @@ button {
   display: flex;
   gap: 8px;
   align-items: flex-start;
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
   padding: 8px;
-  background: var(--bg-elevated);
+  background: linear-gradient(180deg, var(--bg-elevated), var(--bg));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.5);
 }
 
 .character-avatar {
@@ -169,15 +221,17 @@ button {
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+  border: 1px solid var(--border-strong);
 }
 
 .character-avatar.placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent);
-  color: var(--accent-contrast);
-  font-weight: 600;
+  background: var(--bg-raised);
+  color: var(--accent-strong);
+  font-family: Georgia, serif;
+  font-weight: 700;
 }
 
 .character-info {
@@ -189,8 +243,14 @@ button {
 }
 
 .character-name {
-  font-weight: 600;
+  font-family: Georgia, serif;
+  font-weight: 700;
   font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.character-subtitle {
+  font-style: italic;
 }
 
 .character-subtitle,
@@ -221,7 +281,7 @@ button {
 .dialog-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -230,15 +290,16 @@ button {
 }
 
 .dialog {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
   padding: 16px;
   max-width: 360px;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
 }
 
 .dialog-actions {
@@ -264,6 +325,8 @@ button {
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .sheet-editor-header-actions {
@@ -275,9 +338,10 @@ button {
 .import-review-banner {
   font-size: 12px;
   padding: 6px 8px;
-  background: var(--bg-elevated);
+  background: var(--bg-raised);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-left: 3px solid var(--accent);
+  border-radius: 2px;
   color: var(--text-secondary);
 }
 
@@ -285,13 +349,27 @@ button {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
   padding: 10px;
+  background: linear-gradient(180deg, var(--bg-elevated), var(--bg));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.5);
 }
 
 .sheet-section h2 {
   font-size: 14px;
+  text-align: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sheet-section h2::before,
+.sheet-section h2::after {
+  content: "\2726";
+  color: var(--accent);
+  font-size: 0.65em;
+  margin: 0 6px;
+  vertical-align: middle;
 }
 
 .sheet-section label {
@@ -314,15 +392,17 @@ button {
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+  border: 1px solid var(--border-strong);
 }
 
 .identity-avatar.placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent);
-  color: var(--accent-contrast);
-  font-weight: 600;
+  background: var(--bg-raised);
+  color: var(--accent-strong);
+  font-family: Georgia, serif;
+  font-weight: 700;
   font-size: 20px;
 }
 
@@ -362,8 +442,8 @@ button {
 .stepper-value {
   min-width: 1.5em;
   text-align: center;
-  font-weight: 600;
-  color: var(--text);
+  font-weight: 700;
+  color: var(--accent-strong);
 }
 
 .refresh-field {
@@ -395,6 +475,8 @@ button {
   font-size: 12px;
   color: var(--text-secondary);
   padding-top: 6px;
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
 }
 
 .aspect-fields {
@@ -406,7 +488,8 @@ button {
 }
 
 .aspect-title {
-  font-weight: 600;
+  font-weight: 700;
+  font-family: Georgia, serif;
 }
 
 .row-actions {
@@ -453,7 +536,8 @@ button {
 }
 
 .stunt-name {
-  font-weight: 600;
+  font-weight: 700;
+  font-family: Georgia, serif;
 }
 
 .equipment-row-top {
@@ -464,7 +548,8 @@ button {
 .equipment-name {
   flex: 1;
   min-width: 0;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: Georgia, serif;
 }
 
 .equipment-qty {
@@ -483,6 +568,7 @@ button {
   font-size: 12px;
   color: var(--text-secondary);
   font-weight: 600;
+  text-align: left;
 }
 
 .skill-pyramid-row {
@@ -494,7 +580,7 @@ button {
 .skill-pyramid-rating {
   width: 130px;
   flex-shrink: 0;
-  color: var(--text-secondary);
+  color: var(--accent);
 }
 
 .stress-track {
@@ -509,6 +595,8 @@ button {
   justify-content: space-between;
   font-size: 12px;
   color: var(--text-secondary);
+  font-variant: small-caps;
+  letter-spacing: 0.03em;
 }
 
 .stress-boxes {
@@ -526,6 +614,10 @@ button {
   color: var(--text-secondary);
 }
 
+.stress-box input[type="checkbox"] {
+  accent-color: var(--danger);
+}
+
 .consequence-row {
   display: flex;
   align-items: center;
@@ -537,6 +629,7 @@ button {
   flex-shrink: 0;
   font-size: 12px;
   color: var(--text-secondary);
+  font-variant: small-caps;
 }
 
 .consequence-text {
@@ -552,6 +645,10 @@ button {
   white-space: nowrap;
 }
 
+.consequence-used input[type="checkbox"] {
+  accent-color: var(--danger);
+}
+
 /* --- Import --- */
 
 .import-chooser {
@@ -561,6 +658,11 @@ button {
   padding: 10px;
   max-width: 640px;
   margin: 0 auto;
+}
+
+.import-chooser h1 {
+  font-size: 18px;
+  text-align: center;
 }
 
 .import-hint {
@@ -582,5 +684,5 @@ button {
   position: sticky;
   bottom: 0;
   background: var(--bg);
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-strong);
 }
