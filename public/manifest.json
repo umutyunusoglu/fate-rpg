@@ -1,0 +1,14 @@
+{
+  "name": "Fate Core Sheets",
+  "version": "0.1.0",
+  "manifest_version": 1,
+  "author": "fate-rpg",
+  "description": "Manage Fate Core character sheets for the whole party, synced and persisted in the room.",
+  "action": {
+    "title": "Fate Sheets",
+    "icon": "icon.svg",
+    "popover": "index.html",
+    "height": 500,
+    "width": 350
+  }
+}
